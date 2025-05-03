@@ -1,40 +1,63 @@
-/*
- * @Author: hali 13656691830@163.com
- * @Date: 2025-04-28 20:23:25
- * @LastEditors: hali 13656691830@163.com
- * @LastEditTime: 2025-04-28 20:27:03
- * @FilePath: \vitepress\.vitepress\config.mjs
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "My Awesome Project",
-  description: "A VitePress Site",
+  srcDir: './src',
+  title: "我的第一个博客",
+  description: "A BLOG Site",
   themeConfig: {
+    search: {
+      provider: 'local'
+    },
+    lastUpdated: {
+      text: 'Updated at',
+      formatOptions: {
+        dateStyle: 'full',
+        timeStyle: 'medium'
+      }
+    },
+    logo: { src: '/assets/vitepress-logo-mini.svg', width: 24, height: 24 },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'markdown', link: '/markdown-examples' },
+      { text: 'API', link: '/api-examples' },
     ],
 
     sidebar: [
       {
-        text: 'Examples',
+        collapsed: true,
+        text: 'NODE',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { 
+            collapsed: true, text: 'http', items: [
+            { text: 'GET', link: '/node/http/get' },
+            { text: 'POST', link: '/node/http/post' },
+            { text: 'PUT', link: '/node/http/put' },
+            { text: 'DELETE', link: '/node/http/delete' }
+          ] },
+          { text: 'require', items: [
+            { text: 'require', link: '/node/require' },
+          ] },
+            { text: 'ip', items: [
+            { text: 'ip', link: '/node/ip' },
+          ] },
+          { text: '防盗链', items: [
+            { text: '防盗链', link: '/node/anti-theft-chain' },
+          ] },
+          { text: 'test', items: [
+            { text: 'test', link: '/test' },
+          ] },
         ]
       }
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+      { icon: 'github', link: 'https://github.com/hali945/blog/tree/master' }
     ],
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2025-present Evan You'
+      copyright: 'Copyright © 2025-present Hali'
     }
   }
 })
