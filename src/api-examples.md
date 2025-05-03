@@ -1,5 +1,6 @@
 ---
 outline: deep
+title: custom title
 ---
 
 # Runtime API Examples
@@ -24,7 +25,8 @@ const { theme, page, frontmatter } = useData()
 <pre>{{ page }}</pre>
 
 ### Page Frontmatter
-<pre>{{ frontmatter }}</pre>
+<!-- <pre>{{ frontmatter }}</pre> -->
+<pre>{{ $frontmatter.title }}</pre>
 ```
 
 <script setup>
@@ -42,7 +44,7 @@ const { site, theme, page, frontmatter } = useData()
 <pre>{{ page }}</pre>
 
 ### Page Frontmatter
-<pre>{{ frontmatter }}</pre>
+<pre>{{ $frontmatter.title }}</pre>
 
 ## More
 

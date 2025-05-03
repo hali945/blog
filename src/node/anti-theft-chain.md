@@ -7,8 +7,9 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 # 防盗链
-
-```js{4}
+- 在请求头中添加referer属性，属性值在允许的域名列表中才能访问 :tada: 
+::: details 点击展开代码
+```js
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -51,3 +52,4 @@ app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
 ```
+:::

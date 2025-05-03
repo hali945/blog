@@ -1,4 +1,7 @@
 // https://vitepress.dev/guide/custom-theme
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/reset.css';
+
 import { h } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
@@ -12,6 +15,6 @@ export default {
     })
   },
   enhanceApp({ app, router, siteData }) {
-    // ...
+    app.use(Antd);
   }
 }

@@ -3,14 +3,14 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   srcDir: './src',
-  title: "我的第一个博客",
+  title: "风之殇的博客",
   description: "A BLOG Site",
   themeConfig: {
     search: {
       provider: 'local'
     },
     lastUpdated: {
-      text: 'Updated at',
+      text: '最后更新于',
       formatOptions: {
         dateStyle: 'full',
         timeStyle: 'medium'
@@ -44,11 +44,12 @@ export default defineConfig({
           ] },
           { text: '防盗链', items: [
             { text: '防盗链', link: '/node/anti-theft-chain' },
-          ] },
-          { text: 'test', items: [
-            { text: 'test', link: '/test' },
-          ] },
+          ] }
         ]
+      },
+      {
+        text: "test",
+        link: "/test"
       }
     ],
 

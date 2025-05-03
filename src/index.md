@@ -4,18 +4,18 @@ layout: home
 
 hero:
   name: "FIRST BLOG"
-  text: "一个文档站点"
-  tagline: 持续学习，争当牛马
+  text: "前端技术博客"
+  tagline: 学而不思则罔，思而不学则殆
   actions:
     - theme: brand
-      text: 什么是vite？
+      text: Vue
       link: /node/http/get
     - theme: alt
-      text: 快速开始
+      text: React
       link: /node/http/get
     - theme: alt
-      text: Github
-      link: /node/http/get
+      text: test
+      link: /test
       
   image:
     src: /assets/vitepress-logo-large.svg
@@ -36,3 +36,9 @@ features:
     title: 速度真的很快！
     details: 采用静态 HTML 实现快速的页面初次加载，使用客户端路由实现快速的页面切换导航。
 ---
+
+
+
+::: info
+This is an info box.
+:::
