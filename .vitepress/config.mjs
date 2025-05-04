@@ -19,9 +19,7 @@ export default defineConfig({
     logo: { src: '/assets/vitepress-logo-mini.svg', width: 24, height: 24 },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'markdown', link: '/markdown-examples' },
-      { text: 'API', link: '/api-examples' },
+      { text: 'Home', link: '/' }
     ],
 
     sidebar: [
@@ -45,6 +43,29 @@ export default defineConfig({
           { text: '防盗链', items: [
             { text: '防盗链', link: '/node/anti-theft-chain' },
           ] }
+        ]
+      },
+      {
+        text: "构建工具",
+        collapsed: true,
+        items: [
+          { text: 'webpack', link: '/scaffolding/webpack' },
+          { text: 'vite', link: '/scaffolding/vite' },
+          { text: 'rollup', link: '/scaffolding/rollup' }
+        ]
+      },
+      {
+        text: "VUE",
+        collapsed: true,
+        items: [
+          { text: 'vue3', link: '/vue/vue3' }
+        ]
+      },
+      {
+        text: "REACT",
+        collapsed: true,
+        items: [
+          { text: 'react', link: '/react' }
         ]
       },
       {

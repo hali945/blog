@@ -9,16 +9,16 @@ hero:
   actions:
     - theme: brand
       text: Vue
-      link: /node/http/get
+      link: /vue/vue3
     - theme: alt
       text: React
-      link: /node/http/get
+      link: /react
     - theme: alt
       text: test
       link: /test
       
   image:
-    src: /assets/vitepress-logo-large.svg
+    src: /assets/home.png
     alt: VitePress
 
 

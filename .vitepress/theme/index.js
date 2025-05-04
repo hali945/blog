@@ -8,7 +8,7 @@ import './style.css'
 
 /** @type {import('vitepress').Theme} */
 export default {
-  // extends: DefaultTheme,
+  extends: DefaultTheme,
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
