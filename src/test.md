@@ -1,3 +1,7 @@
+---
+editLink: true
+---
+
 <script setup>
 import CustomComponent from './components/test.vue'
 </script>

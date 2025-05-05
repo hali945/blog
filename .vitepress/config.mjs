@@ -23,10 +23,12 @@ export default defineConfig({
     ],
 
     sidebar: [
+      { text: "小程序", link: "/mini-program" },
       {
         collapsed: true,
         text: 'NODE',
         items: [
+          { text: 'node', link: '/node' },
           { 
             collapsed: true, text: 'http', items: [
             { text: 'GET', link: '/node/http/get' },
