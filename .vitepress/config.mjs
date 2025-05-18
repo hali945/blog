@@ -10,6 +10,7 @@ export default defineConfig({
   srcDir: './src',
   title: "风之殇的博客",
   description: "A BLOG Site",
+  base: '/hali945/blog',
   themeConfig: {
     search: {
       provider: 'local'
@@ -21,7 +22,7 @@ export default defineConfig({
         timeStyle: 'medium'
       }
     },
-    logo: { src: '/assets/vitepress-logo-mini.svg', width: 24, height: 24 },
+    logo: { src: '/vitepress-logo-mini.svg', width: 24, height: 24 },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' }
@@ -32,10 +33,14 @@ export default defineConfig({
       { text: "JS", collapsed: true, items: [
         { text: '原型链', link: '/js/prototype' },
         { text: '闭包', link: '/js/closure' },
+        { text: '跨域', link: '/js/cors' },
         { text: '作用域', link: '/js/scope' },
         { text: 'this', link: '/js/this' },
         { text: '继承', link: '/js/inheritance' },
         { text: '事件循环', link: '/js/event-loop' },
+        { text: '垃圾回收', link: '/js/garbage-collection' },
+        { text: 'http缓存', link: '/js/http-cache' },
+        
         
       ] },
       { text: "小程序", link: "/mini-program", collapsed: true },

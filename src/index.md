@@ -8,8 +8,8 @@ hero:
   tagline: 学而不思则罔，思而不学则殆
   actions:
     - theme: brand
-      text: Vue
-      link: /vue/vue3
+      text: JS
+      link: /js/prototype
     - theme: alt
       text: React
       link: /react
