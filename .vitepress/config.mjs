@@ -1,7 +1,12 @@
 import { defineConfig } from 'vitepress'
-
+import llmstxt from 'vitepress-plugin-llms'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  vite: {
+    plugins: [
+      llmstxt()
+    ]
+  },
   srcDir: './src',
   title: "风之殇的博客",
   description: "A BLOG Site",
@@ -23,7 +28,18 @@ export default defineConfig({
     ],
 
     sidebar: [
-      { text: "小程序", link: "/mini-program" },
+      { text: "前端工程化", link: "/engineer/index" },
+      { text: "JS", collapsed: true, items: [
+        { text: '原型链', link: '/js/prototype' },
+        { text: '闭包', link: '/js/closure' },
+        { text: '作用域', link: '/js/scope' },
+        { text: 'this', link: '/js/this' },
+        { text: '继承', link: '/js/inheritance' },
+        { text: '事件循环', link: '/js/event-loop' },
+        
+      ] },
+      { text: "小程序", link: "/mini-program", collapsed: true },
+      { text: "NPM", link: "/npm", collapsed: true },
       {
         collapsed: true,
         text: 'NODE',
