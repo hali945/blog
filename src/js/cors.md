@@ -86,6 +86,14 @@ app.use(cors({
 
 对于复杂请求，浏览器会先发送一个 OPTIONS 请求（预检请求），服务器需要正确响应这个请求才能继续实际的请求。
 
+### 简单请求
+::: info 需满足如下三个要求：
+- 请求方法为：`GET` `HEAD` `POST`
+- 头部字段满足`cors规范`
+- 请求头的content-type为：`text/plain` `multipart/form-data` `application/x-www-form-urlencoded`
+
+:::
+
 ### 携带凭证的请求
 
 如果需要发送带有凭证（如 cookies）的跨域请求，需要：

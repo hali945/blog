@@ -7,6 +7,7 @@ export default defineConfig({
       llmstxt()
     ]
   },
+  head: [[ 'link', { rel: 'icon', href: '/vitepress-logo-mini.svg' }]],
   srcDir: './src',
   title: "风之殇的博客",
   description: "A BLOG Site",
