@@ -10,5 +10,6 @@
   },
   "dependencies": {
     "ant-design-vue": "~4.2.6"
-  }
+  },
+  "packageManager": "pnpm@8.x"
 }
