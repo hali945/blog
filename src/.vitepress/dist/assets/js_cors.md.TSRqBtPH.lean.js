@@ -1,0 +1,1 @@
+import{_ as i,c as a,o as n,ae as l}from"./chunks/framework.Dh1jimFm.js";const o=JSON.parse('{"title":"跨域资源共享 (CORS)","description":"","frontmatter":{},"headers":[],"relativePath":"js/cors.md","filePath":"js/cors.md"}'),h={name:"js/cors.md"};function t(e,s,p,k,r,E){return n(),a("div",null,s[0]||(s[0]=[l("",34)]))}const c=i(h,[["render",t]]);export{o as __pageData,c as default};
