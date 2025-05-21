@@ -11,7 +11,7 @@ export default defineConfig({
   srcDir: './src',
   title: "风之殇的博客",
   description: "A BLOG Site",
-  base: '/hali945/blog',
+  base: '/blog/',
   themeConfig: {
     search: {
       provider: 'local'
