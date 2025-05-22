@@ -1,1 +1,0 @@
-import{_ as i,c as a,o as n,ae as l}from"./chunks/framework.Dh1jimFm.js";const g=JSON.parse('{"title":"闭包","description":"","frontmatter":{},"headers":[],"relativePath":"js/closure.md","filePath":"js/closure.md"}'),h={name:"js/closure.md"};function t(p,s,k,e,E,r){return n(),a("div",null,s[0]||(s[0]=[l("",20)]))}const c=i(h,[["render",t]]);export{g as __pageData,c as default};
