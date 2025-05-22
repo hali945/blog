@@ -1,4 +1,0 @@
----
-url: /react.md
----
-# react

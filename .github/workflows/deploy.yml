@@ -1,3 +1,24 @@
+Skip to content
+Navigation Menu
+hali945
+blog
+
+Type / to search
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+2
+Insights
+Settings
+Deploy VitePress site to Pages
+更新配置，修改基础路径为'/blog/'以优化网站部署。 #4
+Jobs
+Run details
+Workflow file for this run
+.github/workflows/deploy.yml at 41d9ad8
 # 构建 VitePress 站点并将其部署到 GitHub Pages 的示例工作流程
 #
 name: Deploy VitePress site to Pages
@@ -44,11 +65,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install # 或 pnpm install / yarn install / bun install
       - name: Build with VitePress
-        run: pnpm build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
+        run: pnpm docs:build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/.vitepress/dist
+          path: docs/.vitepress/dist
 
   # 部署工作
   deploy:
@@ -62,3 +83,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+更新配置，修改基础路径为'/blog/'以优化网站部署。 · hali945/blog@41d9ad8 

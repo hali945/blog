@@ -4,12 +4,12 @@
     "vitepress-plugin-llms": "^1.1.3"
   },
   "scripts": {
-    "dev": "vitepress dev --open",
-    "build": "vitepress build",
-    "preview": "vitepress preview"
+    "docs:dev": "vitepress dev --open",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
   },
   "dependencies": {
     "ant-design-vue": "~4.2.6"
   },
-  "packageManager": "pnpm@8.11.0"
+  "packageManager": "pnpm@8.x"
 }
