@@ -62,4 +62,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-更新配置，修改基础路径为'/blog/'以优化网站部署。 · hali945/blog@41d9ad8 
