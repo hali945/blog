@@ -5,8 +5,8 @@
   },
   "scripts": {
     "docs:dev": "vitepress dev --open",
-    "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "ant-design-vue": "~4.2.6"
