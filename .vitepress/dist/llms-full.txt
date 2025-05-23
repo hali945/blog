@@ -1,0 +1,2158 @@
+---
+url: /js/closure.md
+---
+# 闭包
+
+## 什么是闭包？
+
+闭包（Closure）是指一个函数可以访问其被创建时所在的词法作用域，即使该函数在其他地方被调用。简单来说，闭包就是函数和声明该函数的词法环境的组合。
+
+## 闭包的特点
+
+1. 函数嵌套
+2. 内部函数可以访问外部函数的变量
+3. 外部函数的变量会被保存在内存中
+
+## 闭包的作用
+
+1. 数据私有化
+2. 保持数据在内存中
+3. 模块化开发
+
+## 示例代码
+
+### 基础示例
+
+```javascript
+function outer() {
+    let count = 0;
+    
+    function inner() {
+        count++;
+        console.log(count);
+    }
+    
+    return inner;
+}
+
+const counter = outer();
+counter(); // 输出: 1
+counter(); // 输出: 2
+counter(); // 输出: 3
+```
+
+### 私有变量示例
+
+```javascript
+function createCounter() {
+    let privateCount = 0;
+    
+    return {
+        increment() {
+            privateCount++;
+            return privateCount;
+        },
+        decrement() {
+            privateCount--;
+            return privateCount;
+        },
+        getCount() {
+            return privateCount;
+        }
+    };
+}
+
+const counter = createCounter();
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+console.log(counter.decrement()); // 1
+console.log(counter.getCount());  // 1
+```
+
+### 模块化示例
+
+```javascript
+const module = (function() {
+    let private = '私有变量';
+    
+    function privateMethod() {
+        console.log(private);
+    }
+    
+    return {
+        publicMethod() {
+            privateMethod();
+        }
+    };
+})();
+
+module.publicMethod(); // 输出: 私有变量
+```
+
+## 注意事项
+
+1. 内存泄漏：过度使用闭包可能导致内存泄漏，因为闭包会保持对外部变量的引用
+2. 性能影响：闭包会占用更多的内存空间
+3. 变量共享：多个闭包共享同一个外部变量时需要注意数据同步问题
+
+## 最佳实践
+
+1. 及时释放不需要的闭包
+2. 避免在循环中创建闭包
+3. 合理使用闭包，不要过度使用
+4. 注意闭包中变量的作用域
+
+## 常见应用场景
+
+1. 事件处理
+2. 模块化开发
+3. 函数工厂
+4. 数据缓存
+5. 防抖和节流
+
+---
+
+---
+url: /node/anti-theft-chain.md
+---
+# 防盗链
+
+* 在请求头中添加referer属性，属性值在允许的域名列表中才能访问 :tada:
+  ::: details 点击展开代码
+
+```js
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
+// 配置 body-parser 中间件
+app.use(bodyParser.json()); // 解析 JSON 格式的请求体
+app.use(bodyParser.urlencoded({ extended: true })); // 解析 URL 编码的请求体
+
+// 防盗链中间件
+const refererCheck = (req, res, next) => {
+    const referer = req.headers.referer;
+    // 允许的域名列表
+    const allowedDomains = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+    
+    // 如果没有 referer 或者 referer 不在允许列表中
+    if (!referer || !allowedDomains.some(domain => referer.startsWith(domain))) {
+        return res.status(403).json({
+            code: 403,
+            message: '禁止访问：非法请求来源'
+        });
+    }
+    
+    next();
+};
+
+// 应用防盗链中间件到所有路由
+app.use(refererCheck);
+
+app.get('/', (req, res) => {
+    console.log("请求头", req.headers);
+    res.send('Hello World');
+});
+
+app.post('/api/v1/user', (req, res) => {
+    console.log("请求体", req.body);
+    res.send('请求成功！');
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+```
+
+:::
+
+---
+
+---
+url: /js/cors.md
+---
+# 跨域资源共享 (CORS)
+
+## 什么是跨域？
+
+跨域是指浏览器出于安全考虑，限制从一个源（域名、协议或端口）加载的网页去请求另一个源的资源。当请求的 URL 与当前页面的 URL 在以下任何方面不同时，就会发生跨域：
+
+* 协议不同（http vs https）
+* 域名不同（example.com vs api.example.com）
+* 端口不同（80 vs 8080）
+
+## 同源策略
+
+同源策略（Same-Origin Policy）是浏览器的一个安全机制，它要求：
+
+* 协议相同
+* 域名相同
+* 端口相同
+
+## CORS 解决方案
+
+### 1. 服务器端配置
+
+#### Node.js Express 示例
+
+```javascript
+const express = require('express');
+const app = express();
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+```
+
+### 2. 代理服务器
+
+使用 Nginx 配置示例：
+
+```nginx
+server {
+    listen 80;
+    server_name example.com;
+
+    location /api {
+        proxy_pass http://api.example.com;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+### 3. JSONP（仅支持 GET 请求）
+
+```javascript
+function jsonp(url, callback) {
+    const script = document.createElement('script');
+    script.src = `${url}?callback=${callback}`;
+    document.body.appendChild(script);
+}
+
+// 使用示例
+jsonp('http://api.example.com/data', 'handleResponse');
+
+function handleResponse(data) {
+    console.log(data);
+}
+```
+
+### 4. 使用 CORS 中间件
+
+#### 使用 cors 包（Node.js）
+
+```javascript
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+app.use(cors({
+    origin: 'http://example.com',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+```
+
+## 常见问题
+
+### 预检请求（Preflight Request）
+
+对于复杂请求，浏览器会先发送一个 OPTIONS 请求（预检请求），服务器需要正确响应这个请求才能继续实际的请求。
+
+### 简单请求
+
+::: info 需满足如下三个要求：
+
+* 请求方法为：`GET` `HEAD` `POST`
+* 头部字段满足`cors规范`
+* 请求头的content-type为：`text/plain` `multipart/form-data` `application/x-www-form-urlencoded`
+
+:::
+
+### 携带凭证的请求
+
+如果需要发送带有凭证（如 cookies）的跨域请求，需要：
+
+1. 客户端设置：
+
+```javascript
+fetch(url, {
+    credentials: 'include'
+});
+```
+
+2. 服务器端设置：
+
+```javascript
+res.header('Access-Control-Allow-Credentials', 'true');
+```
+
+## 最佳实践
+
+1. 明确指定允许的源，避免使用 `*`
+2. 只允许必要的 HTTP 方法
+3. 限制允许的请求头
+4. 设置适当的缓存时间
+5. 考虑使用代理服务器处理跨域请求
+
+## 安全注意事项
+
+1. 谨慎配置 CORS 策略，避免过度开放
+2. 验证 Origin 头信息
+3. 使用 HTTPS 进行安全通信
+4. 定期审查和更新 CORS 配置
+
+---
+
+---
+url: /engineer.md
+---
+# 前端工程化
+
+***
+
+## 1、前端工程化的意义
+
+## 2、模块化和包管理
+
+::: info 模块化
+
+* 模块化的本质就是分解和聚合
+* 分解契合的是主观规律，如`函数`、`文件`
+* 聚合契合的是客观规律
+  文件的问题：
+* 全局污染（分解）
+* 依赖混乱（聚合）
+* 模块化解决文件级别的分解/聚合问题
+
+**模块化的标准**
+
+* 1.`CommonJS CJS`(运行时)
+
+* 2.AMD
+
+* 3.CMD
+
+* 4.UMD
+
+* 5.`Ecmascript Module  ESM`（编译时）
+
+* 绝大部分的打包工具都是ESM，便于进行优化
+
+**模块化的实现**
+
+* 浏览器支支持`ESM`
+* nodejs两种都支持`CJS/ESM`
+* 构建工具一般两种都支持`CJS/ESM`，像webpack，都推荐采用`ESM`
+  :::
+
+::: warning 运行时和编译时
+
+* **运行时**：只有代码运行到这里才能知道引入的文件是哪个js【模块化代表：`CommonJS`】
+
+```js
+if (a) {
+    require("./a.js");
+} else if (b) {
+    require("./b.js");
+}
+```
+
+* **编译时**：运行之前就能确定依赖关系【模块化代表：`Ecmascript Module`】
+* import语句都要写在代码顶部，不能放到 if else里面
+
+![](../assets/编译时.png)
+
+:::
+
+::: info 包管理
+
+* npm
+* pnpm
+* yarn
+  :::
+
+## 3、JS工具链
+
+* 语法兼容性(runtime)
+* API兼容性：polyfill，主要是用core-js
+* 语言增强： tsc
+  ::: info 代码转换：代码集成转换工具，babel
+* 预设（本质就是一堆插件）
+* 基础预设：@babel/preset-env
+  :::
+
+## 4、CSS工具链
+
+### 语言缺失
+
+* 语法缺失（循环/判断/拼接）
+* 功能缺失（颜色函数，数学函数，自定义函数）
+  ::: info css预编译语言
+* stylus
+* sass
+* less
+  :::
+
+::: info postcss
+
+* 后编译语言
+* [postcss](https://postcss.org/docs/)
+
+:::
+
+::: tip 流程
+![](../assets/css编译.png)
+:::
+
+## 5、构建工具和脚手架
+
+::: info 文件指纹
+
+* 没有文件指纹就会访问缓存，不会更新
+  :::
+
+::: info 构建工具
+
+* 构建工具就是把babel/sass/postcss所做的事情统一处理了
+
+![](../assets/构建工具.png)
+:::
+
+### 开发服务器devServer
+
+![](../assets/devserver.png)
+
+::: tip 脚手架
+
+* vue-cli
+* vite
+* cra
+  :::
+
+---
+
+---
+url: /mini-program.md
+---
+# 小程序
+
+---
+
+---
+url: /api-examples.md
+---
+
+# Runtime API Examples
+
+This page demonstrates usage of some of the runtime APIs provided by VitePress.
+
+The main `useData()` API can be used to access site, theme, and page data for the current page. It works in both `.md` and `.vue` files:
+
+```md
+<script setup>
+import { useData } from 'vitepress'
+
+const { theme, page, frontmatter } = useData()
+</script>
+
+## Results
+
+### Theme Data
+<pre>{{ theme }}</pre>
+
+### Page Data
+<pre>{{ page }}</pre>
+
+### Page Frontmatter
+<!-- <pre>{{ frontmatter }}</pre> -->
+<pre>{{ $frontmatter.title }}</pre>
+```
+
+## Results
+
+### Theme Data
+
+### Page Data
+
+### Page Frontmatter
+
+## More
+
+Check out the documentation for the [full list of runtime APIs](https://vitepress.dev/reference/runtime-api#usedata).
+
+---
+
+---
+url: /node\http/get.md
+---
+# GET请求
+
+* 请求行：GET / HTTP/V1.1
+* 请求头：Host: localhost:3000
+
+---
+
+---
+url: /js/http-cache.md
+---
+# HTTP缓存
+
+## 什么是HTTP缓存？
+
+HTTP缓存是一种在客户端或服务器端存储HTTP响应数据的技术，用于减少重复请求，提高网站性能。当用户再次访问相同资源时，可以直接使用缓存的数据，而不需要重新从服务器获取。
+
+## 缓存位置
+
+1. **浏览器缓存**
+   * 内存缓存（Memory Cache）
+   * 硬盘缓存（Disk Cache）
+
+2. **代理服务器缓存**
+   * CDN缓存
+   * 反向代理缓存
+
+## 缓存策略
+
+### 1. 强缓存
+
+强缓存不需要向服务器发送请求，直接使用本地缓存。
+
+相关响应头：
+
+* `Expires`：过期时间（HTTP/1.0）
+* `Cache-Control`：缓存控制（HTTP/1.1）
+
+```http
+Cache-Control: max-age=31536000
+Expires: Wed, 21 Oct 2024 07:28:00 GMT
+```
+
+### 2. 协商缓存
+
+协商缓存需要向服务器发送请求，服务器判断资源是否可用。
+
+相关响应头：
+
+* `Last-Modified` / `If-Modified-Since`：基于文件修改时间
+* `ETag` / `If-None-Match`：基于文件内容
+
+```http
+Last-Modified: Wed, 21 Oct 2023 07:28:00 GMT
+ETag: "33a64df551425fcc55e4d42a148795d9f25f89d4"
+```
+
+## Cache-Control 指令
+
+### 可缓存性
+
+* `public`：响应可以被任何对象缓存
+* `private`：响应只能被单个用户缓存
+* `no-cache`：需要向服务器验证缓存是否可用
+* `no-store`：不缓存响应
+
+### 过期时间
+
+* `max-age=<seconds>`：设置缓存存储的最大周期
+* `s-maxage=<seconds>`：覆盖max-age，仅用于共享缓存
+* `max-stale=<seconds>`：客户端愿意接受的最大过期时间
+
+### 重新验证
+
+* `must-revalidate`：过期后必须向服务器验证
+* `proxy-revalidate`：要求中间缓存服务器验证
+
+## 缓存流程
+
+1. **首次请求**
+   ```
+   浏览器 -> 服务器：请求资源
+   服务器 -> 浏览器：返回资源 + 缓存策略
+   ```
+
+2. **再次请求（强缓存）**
+   ```
+   浏览器：检查本地缓存是否过期
+   未过期：直接使用缓存
+   已过期：进入协商缓存
+   ```
+
+3. **协商缓存**
+   ```
+   浏览器 -> 服务器：发送If-Modified-Since/If-None-Match
+   服务器：检查资源是否更新
+   未更新：返回304 Not Modified
+   已更新：返回新资源
+   ```
+
+## 最佳实践
+
+### 1. 静态资源缓存策略
+
+```http
+# HTML文件
+Cache-Control: no-cache
+
+# CSS/JS文件
+Cache-Control: max-age=31536000
+
+# 图片等媒体文件
+Cache-Control: max-age=31536000
+```
+
+### 2. 动态资源缓存策略
+
+```http
+# API响应
+Cache-Control: no-store, no-cache, must-revalidate
+```
+
+### 3. 缓存更新策略
+
+1. 文件名添加版本号或哈希值
+2. 使用Service Worker进行缓存控制
+3. 合理设置缓存时间
+
+## 常见问题
+
+### 1. 缓存穿透
+
+* 问题：请求不存在的数据，导致缓存失效
+* 解决：使用布隆过滤器或缓存空值
+
+### 2. 缓存击穿
+
+* 问题：热点数据过期，导致大量请求直接访问数据库
+* 解决：使用互斥锁或永不过期策略
+
+### 3. 缓存雪崩
+
+* 问题：大量缓存同时过期
+* 解决：设置随机过期时间
+
+## 调试工具
+
+1. Chrome DevTools
+   * Network面板
+   * Application面板
+
+2. 命令行工具
+   ```bash
+   curl -I https://example.com
+   ```
+
+## 性能优化建议
+
+1. 合理设置缓存策略
+2. 使用CDN加速
+3. 实现资源版本控制
+4. 监控缓存命中率
+5. 定期清理过期缓存
+
+---
+
+---
+url: /node/ip.md
+---
+# ip
+
+* ip本身是一个`数字标识`，用来标识网络设备，实现设备间通信
+
+# ip分类
+
+![ip分类](./images/ip分类.png)
+
+---
+
+---
+url: /js/garbage-collection.md
+---
+# JavaScript 垃圾回收机制
+
+## 什么是垃圾回收？
+
+垃圾回收（Garbage Collection，简称 GC）是一种自动内存管理机制。它的主要职责是跟踪和回收不再使用的内存，防止内存泄漏，确保程序能够高效地使用内存资源。
+
+## 垃圾回收的基本原理
+
+### 1. 引用计数法
+
+引用计数是最简单的垃圾回收算法。其核心思想是：
+
+* 每个对象都有一个引用计数器
+* 当对象被引用时，计数器加1
+* 当引用失效时，计数器减1
+* 当计数器为0时，对象被视为垃圾，可以被回收
+
+**优点：**
+
+* 实现简单
+* 回收及时
+
+**缺点：**
+
+* 无法解决循环引用问题
+* 计数器维护开销大
+
+### 2. 标记清除法（Mark-Sweep）
+
+这是目前主流垃圾回收算法，分为两个阶段：
+
+1. **标记阶段**：
+   * 从根对象（全局对象、活动函数调用栈等）开始遍历
+   * 标记所有可达对象
+
+2. **清除阶段**：
+   * 遍历堆内存
+   * 清除未被标记的对象
+
+**优点：**
+
+* 可以解决循环引用问题
+* 实现相对简单
+
+**缺点：**
+
+* 会产生内存碎片
+* 回收效率较低
+
+### 3. 分代回收
+
+现代 JavaScript 引擎（如 V8）采用分代回收策略：
+
+1. **新生代（New Space）**：
+   * 存放新创建的对象
+   * 使用 Scavenge 算法（复制算法）
+   * 回收频率高
+
+2. **老生代（Old Space）**：
+   * 存放存活时间较长的对象
+   * 使用标记清除或标记整理算法
+   * 回收频率低
+
+## V8 引擎的垃圾回收
+
+### 新生代回收（Scavenge）
+
+1. 将内存分为两个相等的空间：From 空间和 To 空间
+2. 新对象分配在 From 空间
+3. 当 From 空间快满时，触发垃圾回收：
+   * 将存活对象复制到 To 空间
+   * 清空 From 空间
+   * 交换 From 和 To 空间
+
+### 老生代回收
+
+1. **标记阶段**：
+   * 使用三色标记法（白、灰、黑）
+   * 从根对象开始遍历
+   * 标记所有可达对象
+
+2. **清除阶段**：
+   * 清除未被标记的对象
+   * 整理内存碎片（可选）
+
+## 内存泄漏的常见原因
+
+1. **全局变量**：
+   ```javascript
+   function leak() {
+       leaked = 'I am a leaked global variable';
+   }
+   ```
+
+2. **闭包**：
+   ```javascript
+   function createClosure() {
+       const largeObject = new Array(1000000);
+       return function() {
+           console.log(largeObject);
+       };
+   }
+   ```
+
+3. **定时器未清除**：
+   ```javascript
+   setInterval(() => {
+       // 如果不清除，会一直占用内存
+   }, 1000);
+   ```
+
+4. **DOM 引用**：
+   ```javascript
+   const elements = {
+       button: document.getElementById('button')
+   };
+   // 即使删除 DOM 元素，elements 对象仍然持有引用
+   ```
+
+## 最佳实践
+
+1. **及时解除引用**：
+   ```javascript
+   let obj = { data: 'large data' };
+   // 使用完后解除引用
+   obj = null;
+   ```
+
+2. **使用 WeakMap/WeakSet**：
+   ```javascript
+   const weakMap = new WeakMap();
+   weakMap.set(obj, 'value');
+   // 当 obj 被回收时，weakMap 中的引用也会被自动回收
+   ```
+
+3. **避免闭包陷阱**：
+   ```javascript
+   function createSafeClosure() {
+       const data = 'some data';
+       return function() {
+           // 只使用必要的数据
+           return data;
+       };
+   }
+   ```
+
+4. **及时清理定时器**：
+   ```javascript
+   const timer = setInterval(() => {
+       // 操作
+   }, 1000);
+
+   // 不再需要时清除
+   clearInterval(timer);
+   ```
+
+## 性能优化建议
+
+1. 避免频繁创建大对象
+2. 使用对象池复用对象
+3. 及时解除不需要的引用
+4. 使用 Chrome DevTools 的 Memory 面板监控内存使用
+5. 合理使用 WeakMap/WeakSet 存储临时数据
+
+## 总结
+
+垃圾回收是 JavaScript 运行时的重要机制，理解其工作原理对于编写高性能的应用程序至关重要。通过合理的内存管理和遵循最佳实践，可以有效避免内存泄漏，提高应用程序的性能和稳定性。
+
+---
+
+---
+url: /js/event-loop.md
+---
+# JavaScript 事件循环（Event Loop）
+
+## 什么是事件循环？
+
+事件循环是 JavaScript 实现异步编程的核心机制。它允许 JavaScript 在执行单线程代码的同时，能够处理异步操作，实现非阻塞的 I/O 操作。
+
+## 浏览器中的事件循环
+
+### 基本结构
+
+浏览器的事件循环包含以下主要组件：
+
+1. **调用栈（Call Stack）**
+   * 用于存储正在执行的代码
+   * 遵循后进先出（LIFO）原则
+   * 一次只能执行一个任务
+
+2. **任务队列（Task Queues）**
+   * **宏任务队列（Macro Task Queue）**
+     * setTimeout/setInterval
+     * I/O 操作
+     * UI 渲染
+     * 事件监听
+   * **微任务队列（Micro Task Queue）**
+     * Promise.then/catch/finally
+     * MutationObserver
+     * process.nextTick（Node.js 特有）
+
+### 执行顺序
+
+1. 执行同步代码（调用栈）
+2. 检查微任务队列，执行所有微任务
+3. 执行一个宏任务
+4. 重复步骤 2-3
+
+```javascript
+console.log('1'); // 同步代码
+
+setTimeout(() => {
+    console.log('2'); // 宏任务
+}, 0);
+
+Promise.resolve().then(() => {
+    console.log('3'); // 微任务
+});
+
+console.log('4'); // 同步代码
+
+// 输出顺序：1, 4, 3, 2
+```
+
+## Node.js 中的事件循环
+
+### 阶段（Phases）
+
+Node.js 的事件循环分为六个阶段：
+
+1. **timers 阶段**
+   * 执行 setTimeout 和 setInterval 的回调
+
+2. **pending callbacks 阶段**
+   * 执行一些系统操作的回调（如 TCP 错误）
+
+3. **idle, prepare 阶段**
+   * 内部使用
+
+4. **poll 阶段**
+   * 执行 I/O 回调
+   * 检查是否有新的 I/O 事件
+   * 执行 setImmediate 回调
+
+5. **check 阶段**
+   * 执行 setImmediate 回调
+
+6. **close callbacks 阶段**
+   * 执行关闭事件的回调（如 socket.on('close')）
+
+### 微任务队列
+
+Node.js 中的微任务队列分为两种：
+
+1. **nextTick 队列**
+   * process.nextTick 的回调
+   * 优先级最高
+
+2. **Promise 队列**
+   * Promise 的回调
+   * 优先级次之
+
+```javascript
+console.log('1');
+
+setTimeout(() => {
+    console.log('2');
+}, 0);
+
+setImmediate(() => {
+    console.log('3');
+});
+
+process.nextTick(() => {
+    console.log('4');
+});
+
+Promise.resolve().then(() => {
+    console.log('5');
+});
+
+// 输出顺序：1, 4, 5, 2, 3
+```
+
+## 浏览器与 Node.js 的区别
+
+### 1. 任务队列的优先级
+
+**浏览器：**
+
+* 微任务队列优先于宏任务队列
+* 所有微任务执行完毕后才会执行宏任务
+
+**Node.js：**
+
+* 微任务队列分为 nextTick 和 Promise 两个队列
+* nextTick 队列优先于 Promise 队列
+* 每个阶段结束后都会检查微任务队列
+
+### 2. 定时器实现
+
+**浏览器：**
+
+* setTimeout 的最小延迟为 4ms
+* 受页面状态影响（如页面不可见时可能被限制）
+
+**Node.js：**
+
+* setTimeout 的延迟更精确
+* 不受页面状态影响
+* 提供 setImmediate 作为替代方案
+
+### 3. I/O 处理
+
+**浏览器：**
+
+* 主要处理 DOM 事件和网络请求
+* 受同源策略限制
+
+**Node.js：**
+
+* 处理文件系统、网络、子进程等
+* 提供更多底层 API
+
+## 使用场景和注意事项
+
+### 浏览器环境
+
+1. **UI 渲染优化**
+
+```javascript
+// 使用 requestAnimationFrame 优化动画
+function animate() {
+    // 更新动画
+    requestAnimationFrame(animate);
+}
+```
+
+2. **避免阻塞主线程**
+
+```javascript
+// 使用 Web Worker 处理复杂计算
+const worker = new Worker('worker.js');
+worker.postMessage({ data: complexData });
+```
+
+3. **事件委托**
+
+```javascript
+// 使用事件委托优化事件监听
+document.body.addEventListener('click', (e) => {
+    if (e.target.matches('.button')) {
+        // 处理按钮点击
+    }
+});
+```
+
+### Node.js 环境
+
+1. **异步 I/O 操作**
+
+```javascript
+// 使用流处理大文件
+const fs = require('fs');
+const readStream = fs.createReadStream('large-file.txt');
+readStream.pipe(writeStream);
+```
+
+2. **定时任务处理**
+
+```javascript
+// 使用 setImmediate 代替 setTimeout(0)
+setImmediate(() => {
+    // 在下一个事件循环执行
+});
+```
+
+3. **错误处理**
+
+```javascript
+// 使用 process.nextTick 确保错误处理在同步代码之后
+function apiCall(callback) {
+    process.nextTick(() => {
+        try {
+            // 异步操作
+        } catch (err) {
+            callback(err);
+        }
+    });
+}
+```
+
+## 最佳实践
+
+1. **避免阻塞事件循环**
+   * 将耗时操作放在 Worker 中
+   * 使用流处理大文件
+   * 避免同步 I/O 操作
+
+2. **合理使用微任务**
+   * 优先使用 Promise 而不是回调
+   * 谨慎使用 process.nextTick（Node.js）
+   * 避免在微任务中执行耗时操作
+
+3. **内存管理**
+   * 及时清理定时器
+   * 避免闭包导致的内存泄漏
+   * 使用 WeakMap/WeakSet 存储临时数据
+
+4. **错误处理**
+   * 使用 try-catch 捕获同步错误
+   * 使用 Promise.catch 处理异步错误
+   * 实现全局错误处理机制
+
+## 总结
+
+事件循环是 JavaScript 异步编程的核心，理解其工作原理对于编写高性能的应用程序至关重要。浏览器和 Node.js 环境的事件循环实现有所不同，需要根据具体场景选择合适的异步处理方式。通过遵循最佳实践，可以充分利用事件循环的特性，编写出高效、可靠的代码。
+
+---
+
+---
+url: /js/inheritance.md
+---
+# JavaScript继承
+
+## 1、继承的基本概念
+
+::: info 什么是继承
+
+* 继承是面向对象编程的重要特性
+* 子类可以继承父类的属性和方法
+* JavaScript通过原型链实现继承
+* 继承可以提高代码的复用性
+  :::
+
+## 2、继承的实现方式
+
+### 2.1 原型链继承
+
+```javascript
+function Parent() {
+    this.name = '父类';
+}
+
+Parent.prototype.sayName = function() {
+    console.log(this.name);
+};
+
+function Child() {
+    this.age = 18;
+}
+
+// 设置原型链
+Child.prototype = new Parent();
+Child.prototype.constructor = Child;
+
+const child = new Child();
+child.sayName(); // '父类'
+```
+
+::: warning 原型链继承的缺点
+
+1. 引用类型属性被所有实例共享
+2. 创建子类实例时无法向父类构造函数传参
+3. 无法实现多继承
+   :::
+
+### 2.2 构造函数继承
+
+```javascript
+function Parent(name) {
+    this.name = name;
+    this.colors = ['red', 'blue'];
+}
+
+function Child(name, age) {
+    Parent.call(this, name); // 调用父类构造函数
+    this.age = age;
+}
+
+const child1 = new Child('张三', 18);
+const child2 = new Child('李四', 20);
+
+child1.colors.push('green');
+console.log(child1.colors); // ['red', 'blue', 'green']
+console.log(child2.colors); // ['red', 'blue']
+```
+
+::: tip 构造函数继承的优点
+
+1. 避免了引用类型属性被共享
+2. 可以向父类构造函数传参
+3. 可以实现多继承
+   :::
+
+### 2.3 组合继承
+
+```javascript
+function Parent(name) {
+    this.name = name;
+    this.colors = ['red', 'blue'];
+}
+
+Parent.prototype.sayName = function() {
+    console.log(this.name);
+};
+
+function Child(name, age) {
+    Parent.call(this, name); // 构造函数继承
+    this.age = age;
+}
+
+Child.prototype = new Parent(); // 原型链继承
+Child.prototype.constructor = Child;
+
+const child = new Child('张三', 18);
+child.sayName(); // '张三'
+```
+
+::: info 组合继承的优点
+
+1. 结合了原型链继承和构造函数继承的优点
+2. 避免了各自的缺点
+3. 是JavaScript中最常用的继承方式
+   :::
+
+### 2.4 原型式继承
+
+```javascript
+function createObject(o) {
+    function F() {}
+    F.prototype = o;
+    return new F();
+}
+
+const parent = {
+    name: '父类',
+    colors: ['red', 'blue']
+};
+
+const child1 = createObject(parent);
+const child2 = createObject(parent);
+
+child1.colors.push('green');
+console.log(child2.colors); // ['red', 'blue', 'green']
+```
+
+### 2.5 寄生式继承
+
+```javascript
+function createChild(parent) {
+    const child = createObject(parent);
+    child.sayHi = function() {
+        console.log('Hi');
+    };
+    return child;
+}
+
+const child = createChild(parent);
+child.sayHi(); // 'Hi'
+```
+
+### 2.6 寄生组合式继承
+
+```javascript
+function inheritPrototype(Child, Parent) {
+    const prototype = createObject(Parent.prototype);
+    prototype.constructor = Child;
+    Child.prototype = prototype;
+}
+
+function Parent(name) {
+    this.name = name;
+    this.colors = ['red', 'blue'];
+}
+
+Parent.prototype.sayName = function() {
+    console.log(this.name);
+};
+
+function Child(name, age) {
+    Parent.call(this, name);
+    this.age = age;
+}
+
+inheritPrototype(Child, Parent);
+
+const child = new Child('张三', 18);
+child.sayName(); // '张三'
+```
+
+## 3、ES6的继承
+
+::: info class继承
+
+* 使用extends关键字实现继承
+* 使用super调用父类构造函数
+* 更简洁、更易理解
+  :::
+
+```javascript
+class Parent {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    sayName() {
+        console.log(this.name);
+    }
+}
+
+class Child extends Parent {
+    constructor(name, age) {
+        super(name);
+        this.age = age;
+    }
+    
+    sayAge() {
+        console.log(this.age);
+    }
+}
+
+const child = new Child('张三', 18);
+child.sayName(); // '张三'
+child.sayAge(); // 18
+```
+
+## 4、最佳实践
+
+::: tip 继承相关最佳实践
+
+1. 优先使用ES6的class继承
+   * 语法更清晰
+   * 更易维护
+   * 更符合面向对象编程思想
+
+2. 合理使用组合继承
+   * 适用于ES5及以下环境
+   * 结合了多种继承方式的优点
+   * 避免了各自的缺点
+
+3. 注意继承的层次
+   * 避免过深的继承链
+   * 保持代码的清晰度
+   * 考虑使用组合代替继承
+     :::
+
+## 5、常见面试题
+
+::: info 继承相关面试题
+
+1. 原型链继承的优缺点？
+   * 优点：实现简单，可以继承原型上的方法
+   * 缺点：引用类型属性共享，无法传参
+
+2. 组合继承的原理？
+   * 结合构造函数继承和原型链继承
+   * 使用构造函数继承属性
+   * 使用原型链继承方法
+
+3. ES6的class继承和ES5的继承有什么区别？
+   * 语法更简洁
+   * 必须使用super调用父类构造函数
+   * 不存在变量提升
+     :::
+
+---
+
+---
+url: /js/prototype.md
+---
+# JavaScript原型链
+
+## 1、原型链的概念
+
+::: info 什么是原型链
+
+* 原型链是JavaScript实现继承的主要方式
+* 每个函数对象都有一个原型对象（prototype）
+* 对象会从原型对象继承属性和方法
+* 原型对象也可能有自己的原型，形成原型链
+* 所有对象都是new函数而得到的
+* 原型链的基本结构就是函数==>实例==>原型对象三者之间的闭环
+  :::
+
+::: tip 原型链的基本概念
+
+* `__proto__`：对象的隐式原型，指向构造函数的prototype
+* `prototype`：构造函数的显式原型
+* `constructor`：指向构造函数本身
+  :::
+
+## 2、原型链的实现
+
+### 2.1 构造函数创建对象
+
+```javascript
+function Person(name) {
+    this.name = name;
+}
+
+Person.prototype.sayHello = function() {
+    console.log(`Hello, I'm ${this.name}`);
+}
+
+const person = new Person('张三');
+person.sayHello(); // 输出：Hello, I'm 张三
+```
+
+### 2.2 原型链的继承
+
+```javascript
+function Student(name, grade) {
+    Person.call(this, name);
+    this.grade = grade;
+}
+
+// 设置原型链
+Student.prototype = Object.create(Person.prototype);
+Student.prototype.constructor = Student;
+
+const student = new Student('李四', '三年级');
+student.sayHello(); // 输出：Hello, I'm 李四
+```
+
+## 3、原型链的使用场景
+
+::: info 常见使用场景
+
+1. 实现继承
+   * 代码复用
+   * 扩展功能
+   * 多态实现
+
+2. 共享属性和方法
+   * 减少内存占用
+   * 提高性能
+
+3. 原型链上的方法可以被所有实例共享
+   :::
+
+## 4、流程图
+
+::: info 原型链流程图
+![原型链](../assets/prototype-chain.png)
+:::
+
+## 5、注意事项
+
+::: warning 原型链的注意事项
+
+1. 原型链过长会影响性能
+   * 属性查找会逐级向上
+   * 建议控制原型链层级
+
+2. 原型链上的属性是共享的
+   * 引用类型属性要特别注意
+   * 实例属性会覆盖原型属性
+
+3. 构造函数中的this指向
+   * 构造函数中的this指向实例
+   * 原型方法中的this指向调用者
+     :::
+
+## 6、最佳实践
+
+::: tip 原型链的最佳实践
+
+1. 优先使用组合继承
+   * 结合构造函数和原型链的优点
+   * 避免原型链的缺点
+
+2. 使用Object.create()创建对象
+   * 更清晰的继承关系
+   * 更好的性能
+
+3. 合理使用原型方法
+   * 共享方法放在原型上
+   * 实例特有的属性放在构造函数中
+     :::
+
+## 7、常见问题
+
+::: info 原型链相关常见问题
+
+1. 原型链的终点是什么？
+   * Object.prototype
+   * 再往上就是null
+
+2. 如何判断属性是否在原型链上？
+   * hasOwnProperty()
+   * Object.getOwnPropertyNames()
+
+3. 如何安全地扩展原型？
+   * 使用Object.defineProperty()
+   * 避免直接修改内置对象的原型
+
+4. a instanceof b 怎么理解？
+   * b.prototype是否存在于a的原型链上
+
+5. 所有js对象都有\_\_proto\_\_吗？
+   * 不是的，由Object.create(null)创建的对象没有\_\_proto\_\_
+     ![对象](../assets/__proto__.png)
+     :::
+
+---
+
+---
+url: /js/this.md
+---
+# JavaScript中的this指向
+
+## 1、this的基本概念
+
+::: info this的本质
+
+* this是JavaScript中的一个关键字
+* this指向当前代码执行的上下文对象
+* this的指向在函数执行时才能确定
+* this的指向取决于函数的调用方式
+  :::
+
+::: tip 调用方式有如下四种：
+![this的调用方式](../assets/this.png)
+:::
+
+## 2、浏览器和Node环境的区别
+
+### 2.1 全局环境下的this
+
+```javascript
+// 浏览器环境
+console.log(this); // Window对象
+
+// Node环境
+console.log(this); // {}
+```
+
+### 2.2 函数中的this
+
+```javascript
+// 浏览器环境
+function test() {
+    console.log(this); // Window对象
+}
+test();
+
+// Node环境
+function test() {
+    console.log(this); // global对象
+}
+test();
+```
+
+### 2.3 严格模式下的区别
+
+```javascript
+'use strict';
+
+// 浏览器环境
+function test() {
+    console.log(this); // undefined
+}
+test();
+
+// Node环境
+function test() {
+    console.log(this); // undefined
+}
+test();
+```
+
+## 3、this的指向规则
+
+### 3.1 默认绑定
+
+```javascript
+// 浏览器环境
+function test() {
+    console.log(this); // Window对象
+}
+test();
+
+// Node环境
+function test() {
+    console.log(this); // global对象
+}
+test();
+```
+
+### 3.2 隐式绑定
+
+```javascript
+// 浏览器和Node环境行为一致
+const obj = {
+    name: '张三',
+    sayName() {
+        console.log(this.name);
+    }
+};
+obj.sayName(); // '张三'
+```
+
+### 3.3 显式绑定
+
+```javascript
+// 浏览器和Node环境行为一致
+function sayName() {
+    console.log(this.name);
+}
+
+const person = { name: '李四' };
+
+// 使用call
+sayName.call(person); // '李四'
+
+// 使用apply
+sayName.apply(person); // '李四'
+
+// 使用bind
+const boundSayName = sayName.bind(person);
+boundSayName(); // '李四'
+```
+
+### 3.4 new绑定
+
+```javascript
+// 浏览器和Node环境行为一致
+function Person(name) {
+    this.name = name;
+}
+
+const person = new Person('王五');
+console.log(person.name); // '王五'
+```
+
+## 4、特殊情况
+
+::: warning this指向的特殊情况
+
+1. 箭头函数
+   * 箭头函数没有自己的this
+   * this指向外层作用域的this
+   ```javascript
+   // 浏览器环境
+   const obj = {
+       name: '张三',
+       sayName: () => {
+           console.log(this.name); // undefined
+       }
+   };
+
+   // Node环境
+   const obj = {
+       name: '张三',
+       sayName: () => {
+           console.log(this.name); // undefined
+       }
+   };
+   ```
+
+2. 回调函数
+   * 回调函数中的this可能发生改变
+   ```javascript
+   // 浏览器环境
+   const obj = {
+       name: '张三',
+       sayName() {
+           setTimeout(function() {
+               console.log(this.name); // undefined
+           }, 100);
+       }
+   };
+
+   // Node环境
+   const obj = {
+       name: '张三',
+       sayName() {
+           setTimeout(function() {
+               console.log(this.name); // undefined
+           }, 100);
+       }
+   };
+   ```
+
+3. 模块中的this
+   ```javascript
+   // Node环境
+   console.log(this); // module.exports
+   console.log(this === module.exports); // true
+   ```
+
+:::
+
+## 5、最佳实践
+
+::: info this使用的最佳实践
+
+1. 优先使用箭头函数
+   * 避免this指向混乱
+   * 代码更简洁清晰
+
+2. 合理使用显式绑定
+   * 明确指定this的指向
+   * 提高代码可维护性
+
+3. 注意环境差异
+   * 浏览器环境：全局this指向Window
+   * Node环境：全局this指向空对象
+   * 模块中this指向module.exports
+
+4. 避免过度使用this
+   * 过度使用this会增加代码复杂度
+   * 可能导致代码难以维护
+     :::
+
+## 6、常见面试题
+
+::: tip this相关面试题
+
+1. 浏览器和Node环境中this的区别？
+   * 全局环境：浏览器指向Window，Node指向空对象
+   * 函数环境：浏览器指向Window，Node指向global
+   * 模块环境：Node中指向module.exports
+
+2. 如何改变函数中this的指向？
+   * 使用call/apply/bind
+   * 使用箭头函数
+   * 使用new关键字
+
+3. 箭头函数和普通函数的区别？
+   * 箭头函数没有自己的this
+   * 箭头函数不能作为构造函数
+   * 箭头函数没有arguments对象
+     :::
+
+---
+
+---
+url: /js/scope.md
+---
+# JavaScript作用域
+
+## 1、作用域的基本概念
+
+::: info 什么是作用域
+
+* 作用域是变量和函数的可访问范围
+* 作用域决定了代码中变量和其他资源的可见性
+* JavaScript采用词法作用域（静态作用域）
+* 作用域在代码编写时就确定了
+  :::
+
+## 2、作用域的类型
+
+### 2.1 全局作用域
+
+```javascript
+// 全局变量
+var globalVar = '全局变量';
+let globalLet = '全局let';
+const globalConst = '全局const';
+
+// 全局函数
+function globalFunc() {
+    console.log('全局函数');
+}
+```
+
+### 2.2 函数作用域
+
+```javascript
+function test() {
+    // 函数作用域内的变量
+    var funcVar = '函数变量';
+    let funcLet = '函数let';
+    const funcConst = '函数const';
+    
+    console.log(funcVar); // 可以访问
+}
+// console.log(funcVar); // 报错，无法访问
+```
+
+### 2.3 块级作用域
+
+```javascript
+{
+    // 块级作用域
+    let blockLet = '块级let';
+    const blockConst = '块级const';
+    var blockVar = '块级var'; // var没有块级作用域
+}
+
+// console.log(blockLet); // 报错
+// console.log(blockConst); // 报错
+console.log(blockVar); // 可以访问
+```
+
+## 3、作用域链
+
+::: info 作用域链
+
+* 作用域链是JavaScript查找变量的机制
+* 从当前作用域开始，逐级向上查找
+* 直到找到变量或到达全局作用域
+  :::
+
+```javascript
+const global = '全局变量';
+
+function outer() {
+    const outer = '外部变量';
+    
+    function inner() {
+        const inner = '内部变量';
+        console.log(inner); // 内部变量
+        console.log(outer); // 外部变量
+        console.log(global); // 全局变量
+    }
+    
+    inner();
+}
+```
+
+## 4、变量提升
+
+::: warning 变量提升
+
+1. var声明的变量会提升
+   ```javascript
+   console.log(a); // undefined
+   var a = 1;
+   ```
+
+2. let和const不会提升
+   ```javascript
+   console.log(b); // 报错
+   let b = 2;
+   ```
+
+3. 函数声明会提升
+   ```javascript
+   sayHello(); // 可以执行
+   function sayHello() {
+       console.log('Hello');
+   }
+   ```
+
+:::
+
+## 5、闭包
+
+::: tip 闭包
+
+* 闭包是函数和其周围状态的组合
+* 闭包可以访问外部函数的作用域
+* 闭包常用于数据私有化
+  :::
+
+```javascript
+function createCounter() {
+    let count = 0; // 私有变量
+    
+    return {
+        increment() {
+            count++;
+            return count;
+        },
+        getCount() {
+            return count;
+        }
+    };
+}
+
+const counter = createCounter();
+console.log(counter.increment()); // 1
+console.log(counter.getCount()); // 1
+```
+
+## 6、最佳实践
+
+::: info 作用域相关最佳实践
+
+1. 优先使用let和const
+   * 避免变量提升
+   * 提供块级作用域
+   * 防止变量重复声明
+
+2. 避免全局变量
+   * 使用模块化
+   * 使用闭包
+   * 使用命名空间
+
+3. 合理使用闭包
+   * 注意内存泄漏
+   * 避免过度使用
+   * 及时释放不需要的引用
+     :::
+
+## 7、常见面试题
+
+::: tip 作用域相关面试题
+
+1. 什么是作用域链？
+   * 变量查找的机制
+   * 从内到外逐级查找
+   * 直到找到或到达全局作用域
+
+2. let、const、var的区别？
+   * 变量提升
+   * 块级作用域
+   * 重复声明
+   * 暂时性死区
+
+3. 什么是闭包？有什么优缺点？
+   * 函数和其周围状态的组合
+   * 优点：数据私有化、函数工厂
+   * 缺点：内存泄漏、性能影响
+     :::
+
+---
+
+---
+url: /markdown-examples.md
+---
+# Markdown Extension Examples
+
+This page demonstrates some of the built-in markdown extensions provided by VitePress.
+
+## Syntax Highlighting
+
+VitePress provides Syntax Highlighting powered by [Shiki](https://github.com/shikijs/shiki), with additional features like line-highlighting:
+
+**Input**
+
+````md
+```js{4}
+export default {
+  data () {
+    return {
+      msg: 'Highlighted!'
+    }
+  }
+}
+```
+````
+
+**Output**
+
+```js{4}
+export default {
+  data () {
+    return {
+      msg: 'Highlighted!'
+    }
+  }
+}
+```
+
+## Custom Containers
+
+**Input**
+
+```md
+::: info
+This is an info box.
+:::
+
+::: tip
+This is a tip.
+:::
+
+::: warning
+This is a warning.
+:::
+
+::: danger
+This is a dangerous warning.
+:::
+
+::: details
+This is a details block.
+:::
+```
+
+**Output**
+
+::: info
+This is an info box.
+:::
+
+::: tip
+This is a tip.
+:::
+
+::: warning
+This is a warning.
+:::
+
+::: danger
+This is a dangerous warning.
+:::
+
+::: details
+This is a details block.
+:::
+
+## More
+
+Check out the documentation for the [full list of markdown extensions](https://vitepress.dev/guide/markdown).
+
+---
+
+---
+url: /node.md
+---
+# Node.js的作用
+
+* 开发服务器应用
+* 开发工具类应用
+  1. webpack
+  2. vite
+  3. babel
+* 开发桌面端应用
+  1. electron
+  2. nw.js
+  3. vscode
+  4. postman
+  5. figma
+     ![桌面端应用](/assets/桌面端应用.png)
+* 开发移动端应用
+  1. react-native
+  2. weex
+  3. cordova
+* 开发`命令行工具`
+* 开发包管理器
+* 构建工具
+  ...
+
+---
+
+---
+url: /npm.md
+---
+# NPM
+
+::: tip npm
+
+* npm root -g 查看全局安装的包目录
+* `包名`不能包含中文和大写字母
+* 修改windows的执行策略：
+  :::
+  ![](../assets/npm.png)
+
+---
+
+---
+url: /node\http/put.md
+---
+# POST请求
+
+* POST /api/users HTTP/V1.1
+
+* 请求头：Host: localhost:3000
+
+* 请求体：`{ name: "zs" }`
+
+---
+
+---
+url: /node\http/post.md
+---
+# POST请求
+
+* POST /api/users HTTP/V1.1
+
+* 请求头：Host: localhost:3000
+
+* 请求体：`{ name: "zs" }`
+
+---
+
+---
+url: /node\http/delete.md
+---
+# POST请求
+
+* POST /api/users HTTP/V1.1
+
+* 请求头：Host: localhost:3000
+
+* 请求体：`{ name: "zs" }`
+
+---
+
+---
+url: /react.md
+---
+# react
+
+---
+
+---
+url: /node/require.md
+---
+# require的执行流程
+
+![require的执行流程](./images/require.png)
+
+---
+
+---
+url: /scaffolding/rollup.md
+---
+# rollup
+
+---
+
+---
+url: /test.md
+---
+***
+
+## editLink: true
+
+# TEST
+
+* 通过引入antDesignVue组件库生成的SFC自定义组件
+
+## Github风格的表格
+
+| Tables        |      Are      |  Cool |
+| ------------- | :-----------: | ----: |
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      |   centered    |   $12 |
+| zebra stripes |   are neat    |    $1 |
+
+| Table        |      Ar      |  Col |
+| ------------- | :-----------: | ----: |
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      |   centered    |   $12 |
+| zebra stripes |   are neat    |    $1 |
+
+* 2222
+  **[百度](https://www.baidu.com/)**
+
+---
+
+---
+url: /index.md
+---
+
+::: info
+This is an info box.
+:::
+
+---
+
+---
+url: /scaffolding/vite.md
+---
+# vite
+
+---
+
+---
+url: /vue/vue3.md
+---
+# vue3
+
+---
+
+---
+url: /scaffolding/webpack.md
+---
+# WEBPACK
+
+::: tip 怎么提升打包速度？
+
+* eslint(自动删除无用代码)
+* 多线程打包（webpack5自动包含，webpack4是thread-loader）
+* 缓存
+* noParse
+* externals(CDN)
+  :::
