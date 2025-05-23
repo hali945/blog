@@ -46,7 +46,7 @@ jobs:
       - name: Build with VitePress
         run: pnpm docs:build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
       - name: List VitePress output
-        run: ls -al docs/.vitepress
+        run: ls -al .vitepress
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
