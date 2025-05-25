@@ -34,8 +34,11 @@ export default defineConfig({
       { text: "JS", collapsed: true, items: [
         { text: '原型链', link: '/js/prototype' },
         { text: '闭包', link: '/js/closure' },
+        { text: '内存泄漏', link: '/js/memory-leaks-closures' },
+        { text: '内存泄漏和内存溢出', link: '/js/memory-leak-vs-overflow' },
         { text: '跨域', link: '/js/cors' },
         { text: '作用域', link: '/js/scope' },
+        { text: 'reflect', link: '/js/reflect' },
         { text: 'this', link: '/js/this' },
         { text: '继承', link: '/js/inheritance' },
         { text: '事件循环', link: '/js/event-loop' },
