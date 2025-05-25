@@ -93,6 +93,13 @@ export default defineConfig({
         ]
       },
       {
+        text: "chrome devtools",
+        collapsed: true,
+        items: [
+          { text: 'network', link: '/chrome-devtools/network' }
+        ]
+      },
+      {
         text: "test",
         link: "/test"
       }

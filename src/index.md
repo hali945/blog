@@ -18,7 +18,7 @@ hero:
       link: /test
       
   image:
-    src: /assets/home.png
+    src: /home.png
     alt: VitePress
 
 

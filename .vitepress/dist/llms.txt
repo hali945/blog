@@ -60,6 +60,10 @@
 
 - [react](/react.md)
 
+### chrome devtools
+
+- [网络](/chrome-devtools/network.md)
+
 ### test
 
 
@@ -68,7 +72,7 @@
 - [custom title](/api-examples.md)
 - [GET请求](/node\http/get.md)
 - [Markdown Extension Examples](/markdown-examples.md)
-- [POST请求](/node\http/put.md)
 - [POST请求](/node\http/post.md)
 - [POST请求](/node\http/delete.md)
+- [POST请求](/node\http/put.md)
 - [Untitled](/index.md)
