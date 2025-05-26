@@ -44,8 +44,9 @@ export default defineConfig({
         { text: '事件循环', link: '/js/event-loop' },
         { text: '垃圾回收', link: '/js/garbage-collection' },
         { text: 'http缓存', link: '/js/http-cache' },
-        
-        
+      ] },
+      { text: "AI", collapsed: true, items: [
+        { text: 'idea', link: '/AI/idea' },
       ] },
       { text: "小程序", link: "/mini-program", collapsed: true },
       { text: "NPM", link: "/npm", collapsed: true },
