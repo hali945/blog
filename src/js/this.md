@@ -212,3 +212,117 @@ console.log(person.name); // '王五'
    - 箭头函数没有arguments对象
 :::
 
+## 7、this绑定的优先级
+
+::: info this绑定的优先级（从高到低）
+1. new绑定
+2. 显式绑定（call/apply/bind）
+3. 隐式绑定（对象方法调用）
+4. 默认绑定（全局对象）
+:::
+
+### 7.1 优先级示例
+
+```javascript
+// 1. new绑定 > 显式绑定
+function Person(name) {
+    this.name = name;
+}
+const obj = { name: 'obj' };
+const person = new Person('new');
+console.log(person.name); // 'new'
+
+// 2. 显式绑定 > 隐式绑定
+const obj1 = {
+    name: 'obj1',
+    sayName() {
+        console.log(this.name);
+    }
+};
+const obj2 = { name: 'obj2' };
+obj1.sayName.call(obj2); // 'obj2'
+
+// 3. 隐式绑定 > 默认绑定
+const obj3 = {
+    name: 'obj3',
+    sayName() {
+        console.log(this.name);
+    }
+};
+obj3.sayName(); // 'obj3'
+```
+
+### 7.2 特殊情况
+
+1. **显式绑定中的null/undefined**
+```javascript
+function sayName() {
+    console.log(this.name);
+}
+const obj = { name: 'obj' };
+
+// 在非严格模式下，null/undefined会被忽略，使用默认绑定
+sayName.call(null); // 非严格模式下指向全局对象
+sayName.call(undefined); // 非严格模式下指向全局对象
+
+'use strict';
+// 在严格模式下，null/undefined会保持原样
+sayName.call(null); // null
+sayName.call(undefined); // undefined
+```
+
+2. **间接引用**
+```javascript
+const obj1 = {
+    name: 'obj1',
+    sayName() {
+        console.log(this.name);
+    }
+};
+const obj2 = {
+    name: 'obj2'
+};
+
+// 间接引用会使用默认绑定
+(obj2.sayName = obj1.sayName)(); // undefined（非严格模式）或报错（严格模式）
+```
+
+3. **箭头函数的特殊性**
+```javascript
+// 箭头函数的this绑定优先级最高，且不能被修改
+const obj = {
+    name: 'obj',
+    sayName: () => {
+        console.log(this.name);
+    }
+};
+
+// 即使使用显式绑定，也无法改变箭头函数的this指向
+obj.sayName.call({ name: 'new' }); // undefined
+```
+
+### 7.3 优先级判断流程
+
+1. 函数是否通过new调用？如果是，this绑定到新创建的对象
+2. 函数是否通过call/apply/bind调用？如果是，this绑定到指定的对象
+3. 函数是否作为对象的方法调用？如果是，this绑定到该对象
+4. 如果都不是，使用默认绑定（非严格模式下绑定到全局对象，严格模式下绑定到undefined）
+
+### 7.4 最佳实践
+
+1. **明确绑定优先级**
+   - 在代码中明确使用最高优先级的绑定方式
+   - 避免依赖默认绑定
+
+2. **使用显式绑定**
+   - 优先使用call/apply/bind明确指定this
+   - 提高代码可读性和可维护性
+
+3. **注意箭头函数**
+   - 箭头函数的this绑定优先级最高
+   - 一旦确定，无法通过其他方式修改
+
+4. **避免混淆**
+   - 避免在同一个函数中混用多种绑定方式
+   - 保持代码风格的一致性
+

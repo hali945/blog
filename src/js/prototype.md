@@ -48,6 +48,68 @@ const student = new Student('李四', '三年级');
 student.sayHello(); // 输出：Hello, I'm 李四
 ```
 
+### 2.3 原型链的创建方式
+
+```javascript
+// 1. 使用构造函数方式（最常用）
+function Animal(name) {
+    this.name = name;
+}
+Animal.prototype.eat = function() {
+    console.log(`${this.name} is eating`);
+}
+
+// 2. 使用Object.create()方式
+const animalProto = {
+    eat() {
+        console.log(`${this.name} is eating`);
+    }
+};
+const dog = Object.create(animalProto);
+dog.name = '旺财';
+
+// 3. 使用class语法（ES6）
+class Cat {
+    constructor(name) {
+        this.name = name;
+    }
+    eat() {
+        console.log(`${this.name} is eating`);
+    }
+}
+
+// 4. 使用Object.setPrototypeOf()方式
+const birdProto = {
+    fly() {
+        console.log(`${this.name} is flying`);
+    }
+};
+const bird = { name: '小鸟' };
+Object.setPrototypeOf(bird, birdProto);
+```
+
+::: tip 各种创建方式的比较
+1. 构造函数方式
+   - 最传统和常用的方式
+   - 代码结构清晰，易于理解
+   - 适合创建多个相似对象
+
+2. Object.create()方式
+   - 更直观的原型继承
+   - 性能较好
+   - 适合创建单个对象
+
+3. class语法
+   - 更现代的语法
+   - 更接近其他面向对象语言
+   - 内部仍然使用原型链
+
+4. Object.setPrototypeOf()方式
+   - 可以动态修改原型
+   - 性能较差
+   - 不推荐频繁使用
+:::
+
 ## 3、原型链的使用场景
 
 ::: info 常见使用场景
