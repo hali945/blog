@@ -31,8 +31,16 @@ export default defineConfig({
 
     sidebar: [
       { text: "前端工程化", link: "/engineer/index" },
+      { text: "css", collapsed: true, items: [
+        { text: "包含块", link: "/css/containing-block" },
+        { text: "BFC", link: "/css/bfc" },
+        { text: "IFC", link: "/css/ifc" },
+        { text: "GFC", link: "/css/gfc" },
+        { text: "FFC", link: "/css/ffc" }
+      ]},
       { text: "JS", collapsed: true, items: [
         { text: '原型链', link: '/js/prototype' },
+        { text: 'promise', link: '/js/promise' },
         { text: '闭包', link: '/js/closure' },
         { text: '内存泄漏', link: '/js/memory-leaks-closures' },
         { text: '内存泄漏和内存溢出', link: '/js/memory-leak-vs-overflow' },
