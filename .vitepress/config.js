@@ -31,6 +31,7 @@ export default defineConfig({
 
     sidebar: [
       { text: "前端工程化", link: "/engineer/index" },
+      { text: "源码", link: "/sourceCode/index" },
       { text: "css", collapsed: true, items: [
         { text: "包含块", link: "/css/containing-block" },
         { text: "BFC", link: "/css/bfc" },
