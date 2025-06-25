@@ -116,6 +116,13 @@ export default defineConfig({
         ]
       },
       {
+        text: "面试集锦",
+        collapsed: true,
+        items: [
+          { text: 'interviews', link: '/interviews/index' }
+        ]
+      },
+      {
         text: "test",
         link: "/test"
       }
