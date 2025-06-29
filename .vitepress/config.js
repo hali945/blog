@@ -34,6 +34,7 @@ export default defineConfig({
       { text: "源码", link: "/sourceCode/index" },
       { text: "css", collapsed: true, items: [
         { text: "包含块", link: "/css/containing-block" },
+        { text: "css属性计算", link: "/css/css-computed" },
         { text: "BFC", link: "/css/bfc" },
         { text: "IFC", link: "/css/ifc" },
         { text: "GFC", link: "/css/gfc" },
@@ -41,6 +42,7 @@ export default defineConfig({
       ]},
       { text: "JS", collapsed: true, items: [
         { text: '原型链', link: '/js/prototype' },
+        { text: '浏览器渲染', link: '/js/render' },
         { text: 'promise', link: '/js/promise' },
         { text: '闭包', link: '/js/closure' },
         { text: '内存泄漏', link: '/js/memory-leaks-closures' },
