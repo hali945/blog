@@ -44,6 +44,8 @@ export default defineConfig({
         { text: '原型链', link: '/js/prototype' },
         { text: '浏览器渲染', link: '/js/render' },
         { text: 'promise', link: '/js/promise' },
+        { text: '事件冒泡', link: '/js/bubbling' },
+        { text: '阻止默认事件', link: '/js/prevent-default' },
         { text: '闭包', link: '/js/closure' },
         { text: '内存泄漏', link: '/js/memory-leaks-closures' },
         { text: '内存泄漏和内存溢出', link: '/js/memory-leak-vs-overflow' },
@@ -100,7 +102,8 @@ export default defineConfig({
         text: "VUE",
         collapsed: true,
         items: [
-          { text: 'vue3', link: '/vue/vue3' }
+          { text: 'vue3', link: '/vue/vue3' },
+          { text: 'transition', link: '/vue/transition' }
         ]
       },
       {
