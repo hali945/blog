@@ -35,6 +35,7 @@ export default defineConfig({
       { text: "css", collapsed: true, items: [
         { text: "包含块", link: "/css/containing-block" },
         { text: "css属性计算", link: "/css/css-computed" },
+        { text: "瀑布流布局", link: "/css/pubu" },
         { text: "BFC", link: "/css/bfc" },
         { text: "IFC", link: "/css/ifc" },
         { text: "GFC", link: "/css/gfc" },
