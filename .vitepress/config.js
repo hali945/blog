@@ -40,7 +40,7 @@ export default defineConfig({
         { text: "IFC", link: "/css/ifc" },
         { text: "GFC", link: "/css/gfc" },
         { text: "margin", link: "/css/margin" },
-        { text: "GFC", link: "/css/gfc" },
+        { text: "background", link: "/css/background" },
         { text: "FFC", link: "/css/ffc" }
       ]},
       { text: "JS", collapsed: true, items: [
