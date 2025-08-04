@@ -69,6 +69,9 @@ export default defineConfig({
         { text: '垃圾回收', link: '/js/garbage-collection' },
         { text: 'http缓存', link: '/js/http-cache' },
       ] },
+      { text: "案例", collapsed: true, items: [
+        { text: "瀑布流", link: "/case/pubu" },
+      ]},
       { text: "AI", collapsed: true, items: [
         { text: 'idea', link: '/AI/idea' },
       ] },
@@ -104,6 +107,13 @@ export default defineConfig({
           { text: 'webpack', link: '/scaffolding/webpack' },
           { text: 'vite', link: '/scaffolding/vite' },
           { text: 'rollup', link: '/scaffolding/rollup' }
+        ]
+      },
+      {
+        text: "投资",
+        collapsed: true,
+        items: [
+          { text: '仓位管理', link: '/invest/position' },
         ]
       },
       {
